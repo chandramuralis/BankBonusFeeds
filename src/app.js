@@ -125,6 +125,7 @@ function parseFeed(xmlText, feedSource) {
             pubDate: pubDateText ? new Date(pubDateText) : new Date(),
             source: feedSource.name,
             sourceIcon: feedSource.icon,
+            sourceIconUrl: feedSource.iconUrl, // Optional image URL for icon
             category: feedSource.category,
             description: description
         };
@@ -239,8 +240,11 @@ function renderAggregatedView(container) {
             // Add source header
             const sourceHeader = document.createElement('div');
             sourceHeader.className = 'feed-source-header';
+            const iconHtml = item.sourceIconUrl
+                ? `<img src="${item.sourceIconUrl}" class="source-icon-img" alt="">`
+                : item.sourceIcon;
             sourceHeader.innerHTML = `
-                <span class="source-badge">${item.sourceIcon} ${item.source}</span>
+                <span class="source-badge">${iconHtml} ${item.source}</span>
             `;
             currentGroup.appendChild(sourceHeader);
 
@@ -278,8 +282,11 @@ function renderIndividualView(container) {
 
         const header = document.createElement('div');
         header.className = 'source-group-header';
+        const iconHtml = items[0].sourceIconUrl
+            ? `<img src="${items[0].sourceIconUrl}" class="source-icon-img" alt="">`
+            : items[0].sourceIcon;
         header.innerHTML = `
-            <h2 class="source-group-title">${items[0].sourceIcon} ${source}</h2>
+            <h2 class="source-group-title">${iconHtml} ${source}</h2>
             <span class="source-group-count">${items.length} items</span>
         `;
         sourceGroup.appendChild(header);
@@ -301,7 +308,10 @@ function createFeedItemElement(item, showSource = true) {
     const div = document.createElement('div');
     div.className = 'feed-item';
 
-    const sourceBadge = showSource ? `<div class="feed-source">${item.sourceIcon} ${item.source}</div>` : '';
+    const iconHtml = item.sourceIconUrl
+        ? `<img src="${item.sourceIconUrl}" class="source-icon-img" alt="">`
+        : item.sourceIcon;
+    const sourceBadge = showSource ? `<div class="feed-source">${iconHtml} ${item.source}</div>` : '';
     const description = item.description ? `<div class="feed-description">${item.description}</div>` : '';
 
     div.innerHTML = `

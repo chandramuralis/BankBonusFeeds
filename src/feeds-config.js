@@ -1,11 +1,15 @@
 // Feed Sources Configuration
+// Each feed can have either:
+// - icon: emoji string (e.g., '💳')
+// - iconUrl: URL to an image (optional, takes precedence over emoji)
 export const FEED_SOURCES = [
     // Blogs
     {
         name: 'Doctor of Credit',
-        url: 'https://www.doctorofcredit.com/feed/',
+        url: 'https://www.doctorofcredit.com/category/bank-account-bonuses/',
         category: 'blog',
         icon: '💳',
+        iconUrl: 'https://www.doctorofcredit.com/favicon.ico',
         description: 'Bank bonuses, credit card deals, and financial tips'
     },
     {
