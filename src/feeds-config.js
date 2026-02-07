@@ -6,7 +6,7 @@ export const FEED_SOURCES = [
     // Blogs
     {
         name: 'Doctor of Credit',
-        url: 'https://www.doctorofcredit.com/category/bank-account-bonuses/',
+        url: 'https://www.doctorofcredit.com/feed/',
         category: 'blog',
         icon: '💳',
         iconUrl: 'https://www.doctorofcredit.com/favicon.ico',
