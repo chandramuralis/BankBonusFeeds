@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aggregated RSS feeds for bonus hunting, bank promotions, credit card deals, and financial opportunities from top sources.">
+    <meta name="keywords" content="bonus hunting, bank bonuses, credit card deals, RSS aggregator, financial deals">
+    <meta property="og:title" content="Bonus Hunting Feed Aggregator">
+    <meta property="og:description" content="All your favorite bonus hunting feeds in one place">
+    <meta property="og:type" content="website">
+    
+    <title>Bonus Hunting Feed Aggregator</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">💰 Bonus Hunter</h1>
+                <nav class="nav">
+                    <button id="darkModeToggle" class="btn-icon" aria-label="Toggle dark mode">
+                        🌙
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Controls Section -->
+            <section class="controls">
+                <div class="search-box">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Search feeds..."
+                        aria-label="Search feeds"
+                    >
+                    <span class="search-icon">🔍</span>
+                </div>
+
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label class="filter-label">Category:</label>
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="all">All Sources</option>
+                            <option value="blog">Blogs</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="podcast">Podcasts</option>
+                            <option value="reddit">Reddit</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Time:</label>
+                        <select id="timeFilter" class="filter-select">
+                            <option value="all">All Time</option>
+                            <option value="24h">Last 24 Hours</option>
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d">Last 30 Days</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">View:</label>
+                        <select id="viewMode" class="filter-select">
+                            <option value="aggregated">Aggregated</option>
+                            <option value="individual">By Source</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="stats" id="stats">
+                    <span class="stat-item">
+                        <strong id="itemCount">0</strong> items
+                    </span>
+                    <span class="stat-item">
+                        Last updated: <span id="lastUpdated">Never</span>
+                    </span>
+                </div>
+            </section>
+
+            <!-- Loading State -->
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading feeds...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error" class="error-message" style="display: none;">
+                <span class="error-icon">⚠️</span>
+                <p id="errorText"></p>
+                <button id="retryBtn" class="btn-primary">Retry</button>
+            </div>
+
+            <!-- Feed Container -->
+            <div id="feedContainer" class="feed-container"></div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <span class="empty-icon">🔍</span>
+                <p>No feeds found matching your criteria</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>Feeds refresh automatically every 15 minutes</p>
+            <p class="footer-note">Aggregating the best bonus hunting content from across the web</p>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTop" class="scroll-to-top" aria-label="Scroll to top">
+        ↑
+    </button>
+
+    <script type="module" src="src/app.js"></script>
+</body>
+</html>
