@@ -10,6 +10,7 @@ const state = {
     lastUpdated: null,
     searchQuery: '',
     categoryFilter: 'all',
+    sourceFilter: 'Doctor of Credit',
     timeFilter: 'all',
     viewMode: 'aggregated'
 };
@@ -166,6 +167,26 @@ async function fetchAllFeeds() {
 // Filtering & Search
 // ===================================
 
+// Populate source filter dropdown
+function populateSourceFilter() {
+    const sourceSelect = document.getElementById('sourceFilter');
+    // Keep the "All Sources" option
+    sourceSelect.innerHTML = '<option value="all">All Sources</option>';
+
+    // Extract unique sources from configuration
+    const sources = FEED_SOURCES.map(source => source.name).sort();
+
+    sources.forEach(sourceName => {
+        const option = document.createElement('option');
+        option.value = sourceName;
+        option.textContent = sourceName;
+        sourceSelect.appendChild(option);
+    });
+
+    // Set default value
+    sourceSelect.value = state.sourceFilter;
+}
+
 function applyFilters() {
     let filtered = [...state.allFeeds];
 
@@ -173,15 +194,16 @@ function applyFilters() {
     if (state.searchQuery) {
         const query = state.searchQuery.toLowerCase();
         filtered = filtered.filter(item =>
-            item.title.toLowerCase().includes(query) ||
-            item.description.toLowerCase().includes(query) ||
             item.source.toLowerCase().includes(query)
         );
     }
-
-    // Apply category filter
     if (state.categoryFilter !== 'all') {
         filtered = filtered.filter(item => item.category === state.categoryFilter);
+    }
+
+    // Apply source filter
+    if (state.sourceFilter !== 'all') {
+        filtered = filtered.filter(item => item.source === state.sourceFilter);
     }
 
     // Apply time filter
@@ -460,6 +482,12 @@ function initEventListeners() {
         applyFilters();
     });
 
+    // Source filter
+    document.getElementById('sourceFilter').addEventListener('change', (e) => {
+        state.sourceFilter = e.target.value;
+        applyFilters();
+    });
+
     // Time filter
     document.getElementById('timeFilter').addEventListener('change', (e) => {
         state.timeFilter = e.target.value;
@@ -483,6 +511,7 @@ function initEventListeners() {
 // ===================================
 
 async function init() {
+    populateSourceFilter();
     initEventListeners();
     initDarkMode();
     initScrollToTop();
