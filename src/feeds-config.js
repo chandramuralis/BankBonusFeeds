@@ -65,13 +65,13 @@ export const FEED_SOURCES = [
         icon: '🎥',
         description: 'Bank bonus strategies and tutorials'
     },
-    {
-        name: 'AskSebby',
-        url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCvnvJLbKbLlPP2-LGcf8FYQ',
-        category: 'youtube',
-        icon: '📺',
-        description: 'Credit cards and travel rewards'
-    },
+    // {
+    //     name: 'AskSebby',
+    //     url: 'https://www.youtube.com/feeds/videos.xml?channel_id=UCvnvJLbKbLlPP2-LGcf8FYQ',
+    //     category: 'youtube',
+    //     icon: '📺',
+    //     description: 'Credit cards and travel rewards'
+    // },
 
     // Additional Blogs
     // {
@@ -81,13 +81,13 @@ export const FEED_SOURCES = [
     //     icon: '🛫',
     //     description: 'Miles, points, and travel rewards'
     // },
-    {
-        name: 'Danny the Deal Guru',
-        url: 'https://dannythedealg.wixsite.com/blog/feed.xml',
-        category: 'blog',
-        icon: '🎓',
-        description: 'Credit card and bank bonus deals'
-    },
+    // {
+    //     name: 'Danny the Deal Guru',
+    //     url: 'https://dannythedealg.wixsite.com/blog/feed.xml',
+    //     category: 'blog',
+    //     icon: '🎓',
+    //     description: 'Credit card and bank bonus deals'
+    // },
     // {
     //     name: 'Travel Miles 101',
     //     url: 'https://travelmiles101.com/feed/',
