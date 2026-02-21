@@ -26,20 +26,20 @@ export const FEED_SOURCES = [
         icon: '💵',
         description: 'Bank promotions and money-making opportunities'
     },
-    {
-        name: 'Million Mile Secrets',
-        url: 'https://millionmilesecrets.com/feed/',
-        category: 'blog',
-        icon: '✈️',
-        description: 'Travel rewards and credit card strategies'
-    },
-    {
-        name: 'The Points Guy',
-        url: 'https://thepointsguy.com/feed/',
-        category: 'blog',
-        icon: '🎯',
-        description: 'Travel and credit card rewards news'
-    },
+    // {
+    //     name: 'Million Mile Secrets',
+    //     url: 'https://millionmilesecrets.com/feed/',
+    //     category: 'blog',
+    //     icon: '✈️',
+    //     description: 'Travel rewards and credit card strategies'
+    // },
+    // {
+    //     name: 'The Points Guy',
+    //     url: 'https://thepointsguy.com/feed/',
+    //     category: 'blog',
+    //     icon: '🎯',
+    //     description: 'Travel and credit card rewards news'
+    // },
 
     // Reddit Feeds
     {
@@ -49,13 +49,13 @@ export const FEED_SOURCES = [
         icon: '🔄',
         description: 'Credit card churning community'
     },
-    {
-        name: 'r/CreditCards',
-        url: 'https://www.reddit.com/r/CreditCards/.rss',
-        category: 'reddit',
-        icon: '💳',
-        description: 'Credit card discussion and advice'
-    },
+    // {
+    //     name: 'r/CreditCards',
+    //     url: 'https://www.reddit.com/r/CreditCards/.rss',
+    //     category: 'reddit',
+    //     icon: '💳',
+    //     description: 'Credit card discussion and advice'
+    // },
 
     // YouTube Channels (Note: YouTube RSS feeds)
     {
@@ -74,13 +74,13 @@ export const FEED_SOURCES = [
     },
 
     // Additional Blogs
-    {
-        name: 'Frequent Miler',
-        url: 'https://frequentmiler.com/feed/',
-        category: 'blog',
-        icon: '🛫',
-        description: 'Miles, points, and travel rewards'
-    },
+    // {
+    //     name: 'Frequent Miler',
+    //     url: 'https://frequentmiler.com/feed/',
+    //     category: 'blog',
+    //     icon: '🛫',
+    //     description: 'Miles, points, and travel rewards'
+    // },
     {
         name: 'Danny the Deal Guru',
         url: 'https://dannythedealg.wixsite.com/blog/feed.xml',
@@ -88,13 +88,13 @@ export const FEED_SOURCES = [
         icon: '🎓',
         description: 'Credit card and bank bonus deals'
     },
-    {
-        name: 'Travel Miles 101',
-        url: 'https://travelmiles101.com/feed/',
-        category: 'blog',
-        icon: '🌍',
-        description: 'Travel rewards and points strategies'
-    }
+    // {
+    //     name: 'Travel Miles 101',
+    //     url: 'https://travelmiles101.com/feed/',
+    //     category: 'blog',
+    //     icon: '🌍',
+    //     description: 'Travel rewards and points strategies'
+    // }
 ];
 
 // CORS Proxies (fallback list)
