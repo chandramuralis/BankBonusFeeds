@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Banff Family Trip — June 6–9</title>
+<style>
+  :root {
+    --green: #1a6b4a; --green-light: #e6f4ee; --green-mid: #2d8f64;
+    --purple: #4a3580; --purple-light: #eeeaf8;
+    --amber: #b86a00; --amber-light: #fef3e2;
+    --blue: #1a5799; --blue-light: #e6f0fa;
+    --red: #c0392b; --red-light: #fdecea;
+    --gray: #555; --gray-light: #f5f5f3; --gray-mid: #e0e0da;
+    --text: #1a1a1a; --text2: #555; --text3: #888;
+    --white: #ffffff; --card-bg: #ffffff;
+    --radius: 12px; --radius-sm: 8px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --green: #3dbf84; --green-light: #0d2e1f; --green-mid: #2d8f64;
+      --purple: #a08fe8; --purple-light: #1e1640;
+      --amber: #f0b84a; --amber-light: #2a1d00;
+      --blue: #6aaeee; --blue-light: #0d2240;
+      --red: #e97060; --red-light: #2d1210;
+      --gray: #aaa; --gray-light: #1e1e1c; --gray-mid: #333330;
+      --text: #f0f0ee; --text2: #bbb; --text3: #777;
+      --white: #141412; --card-bg: #1e1e1c;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'SF Pro Text', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--gray-light); color: var(--text); font-size: 15px; line-height: 1.5; }
+  a { color: var(--blue); text-decoration: none; }
+
+  /* Header */
+  .app-header { background: var(--green); color: #fff; padding: 16px 16px 12px; }
+  .app-header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+  .app-header p { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+
+  /* Day tabs — fixed at bottom, most reliable for iOS touch */
+  .tabs { display: flex; background: var(--card-bg); border-top: 1px solid var(--gray-mid);
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.08); }
+  .tab { flex: 1; min-width: 0; padding: 8px 2px 12px; text-align: center;
+    font-size: 11px; font-weight: 600; color: var(--text3);
+    display: block; background: none; border: none; outline: none;
+    -webkit-appearance: none; appearance: none;
+    touch-action: manipulation; -webkit-tap-highlight-color: rgba(0,0,0,0);
+    font-family: inherit; line-height: 1.3; cursor: pointer;
+    user-select: none; -webkit-user-select: none; }
+  .tab.active { color: var(--green); }
+  .tab-emoji { font-size: 20px; display: block; margin-bottom: 2px; }
+
+  /* Panels */
+  .panel { display: none; padding: 12px 12px 100px; }
+  .panel.active { display: block; }
+
+  /* Alert banners */
+  .alert { border-radius: var(--radius-sm); padding: 11px 13px; margin-bottom: 12px; font-size: 13px; line-height: 1.6; }
+  .alert-warn { background: var(--amber-light); color: var(--amber); border-left: 4px solid var(--amber); }
+  .alert-info { background: var(--blue-light); color: var(--blue); border-left: 4px solid var(--blue); }
+  .alert b { font-weight: 700; }
+
+  /* Route strip */
+  .route-strip { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 8px 0 10px;
+    scrollbar-width: none; }
+  .route-strip::-webkit-scrollbar { display: none; }
+  .rs { background: var(--gray-mid); border-radius: 20px; padding: 4px 9px; font-size: 11px;
+    font-weight: 600; color: var(--text2); white-space: nowrap; flex-shrink: 0; }
+  .ra { color: var(--text3); padding: 0 4px; font-size: 13px; flex-shrink: 0; }
+
+  /* Section label */
+  .section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+    color: var(--text3); margin: 14px 0 8px; display: flex; align-items: center; gap: 6px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--gray-mid); }
+
+  /* Stop cards */
+  .card { background: var(--card-bg); border-radius: var(--radius); margin-bottom: 10px;
+    box-shadow: var(--shadow); overflow: hidden; }
+  .card-header { padding: 12px 14px 0; display: flex; align-items: flex-start; gap: 10px; }
+  .stop-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .n-green { background: var(--green-light); color: var(--green); }
+  .n-purple { background: var(--purple-light); color: var(--purple); }
+  .n-amber { background: var(--amber-light); color: var(--amber); }
+  .n-blue { background: var(--blue-light); color: var(--blue); }
+  .stop-meta { flex: 1; }
+  .stop-time { font-size: 11px; color: var(--text3); font-weight: 600; }
+  .stop-name { font-size: 15px; font-weight: 700; margin-top: 1px; line-height: 1.3; }
+  .dur { background: var(--gray-light); border-radius: 20px; padding: 3px 8px; font-size: 11px;
+    font-weight: 600; color: var(--text3); white-space: nowrap; flex-shrink: 0; margin-top: 4px; }
+  .card-body { padding: 8px 14px 13px 52px; }
+  .row { display: flex; gap: 7px; margin-bottom: 7px; font-size: 13px; line-height: 1.5; color: var(--text2); }
+  .row-icon { flex-shrink: 0; font-size: 14px; margin-top: 0px; }
+  .row b { color: var(--text); font-weight: 600; }
+  .photo-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700;
+    padding: 3px 8px; border-radius: 20px; background: var(--amber-light); color: var(--amber); margin-top: 2px; }
+  .maps-btn { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; padding: 8px 14px;
+    border-radius: 20px; background: var(--blue-light); color: var(--blue); font-size: 12px; font-weight: 700; }
+  .veg-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 8px;
+    border-radius: 20px; background: var(--green-light); color: var(--green); margin-top: 4px; }
+
+  /* Meal card */
+  .meal-card { background: var(--card-bg); border-radius: var(--radius); margin-bottom: 10px;
+    box-shadow: var(--shadow); padding: 12px 14px; }
+  .meal-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .meal-body { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .meal-body b { color: var(--text); font-weight: 600; }
+
+  /* Tip card */
+  .tip-card { background: var(--green-light); border-radius: var(--radius); padding: 12px 14px;
+    margin-bottom: 10px; font-size: 13px; color: var(--text2); line-height: 1.6; border-left: 4px solid var(--green); }
+  .tip-card b { color: var(--green); font-weight: 700; }
+
+  /* Full route button */
+  .full-route-btn { display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--green); color: #fff; border-radius: var(--radius); padding: 13px;
+    font-size: 14px; font-weight: 700; margin-bottom: 12px; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>🏔 Banff Family Trip</h1>
+  <p>June 6–9 · Blackstone Mountain Lodge, Canmore</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" id="tab0" type="button"><span class="tab-emoji">🏙</span>Day 1</button>
+  <button class="tab" id="tab1" type="button"><span class="tab-emoji">🌲</span>Day 2</button>
+  <button class="tab" id="tab2" type="button"><span class="tab-emoji">🚌</span>Day 3</button>
+  <button class="tab" id="tab3" type="button"><span class="tab-emoji">🧊</span>Day 4</button>
+</div>
+
+<!-- ═══════════════════════ DAY 1 ═══════════════════════ -->
+<div id="p0" class="panel active">
+  <div class="alert alert-warn"><b>⚠ Gondola parking is CAD $17.50/day (new 2026).</b> Park FREE at Banff Train Station lot → take Roam Bus Route 1 (free with Gondola ticket). Save money + stress.</div>
+
+  <a class="full-route-btn" target="_blank"
+    href="https://www.google.com/maps/dir/170+Kananaskis+Way+Canmore+AB/Bow+Falls+Banff+AB+T1L+1B4/Surprise+Corner+Viewpoint+Banff/Banff+Gondola+100+Mountain+Ave+Banff/338+Beaver+Street+Banff/Lake+Minnewanka+Cruise+Banff/Two+Jack+Lake+Banff/Johnson+Lake+Banff/Hoodoos+Viewpoint+Banff/170+Kananaskis+Way+Canmore+AB">
+    🗺 Open Full Day 1 Route in Maps
+  </a>
+
+  <div class="route-strip">
+    <span class="rs">Hotel</span><span class="ra">›</span><span class="rs">Bow Falls</span><span class="ra">›</span><span class="rs">Surprise Corner</span><span class="ra">›</span><span class="rs">Gondola</span><span class="ra">›</span><span class="rs">Lunch</span><span class="ra">›</span><span class="rs">Minnewanka Cruise</span><span class="ra">›</span><span class="rs">Two Jack</span><span class="ra">›</span><span class="rs">Johnson Lake</span><span class="ra">›</span><span class="rs">Hoodoos</span><span class="ra">›</span><span class="rs">Hotel</span>
+  </div>
+
+  <div class="section-label">Morning</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-green">1</div>
+      <div class="stop-meta">
+        <div class="stop-time">8:30 AM · 25 min drive from hotel</div>
+        <div class="stop-name">Bow Falls</div>
+      </div>
+      <div class="dur">30 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Bow Falls, Banff, AB T1L 1B4</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free small lot on Spray Ave at the Bow Falls pullout. Or park on Bow Ave (free, 2-hr limit). 2-min flat walk to the falls.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Wide rushing cascade of the Bow River — broad, not tall. Walk onto the flat rock ledge right at the water. Kids love the sound and mist up close. Easy flat path, fully paved.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Stand on the flat rock ledge just right of the main viewpoint — full width of falls + Mt. Rundle in the background. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Bow+Falls+Banff+AB+T1L+1B4" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-green">2</div>
+      <div class="stop-meta">
+        <div class="stop-time">9:05 AM · 2-min walk from Bow Falls</div>
+        <div class="stop-name">Surprise Corner Viewpoint</div>
+      </div>
+      <div class="dur">20 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Buffalo St, Banff, AB T1L 1K2</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Same lot as Bow Falls. Walk up Buffalo St for 2 min. No extra parking needed.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> The iconic Fairmont Banff Springs "castle" framed between mountain peaks with the Bow River gorge below. Kids love spotting the castle. 30-second flat walk to the railing.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Far left end of the viewpoint railing — castle + valley + mountains all in frame. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Surprise+Corner+Viewpoint+Banff" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-green">3</div>
+      <div class="stop-meta">
+        <div class="stop-time">9:30 AM · Drive 5 min to Train Station → Roam Bus</div>
+        <div class="stop-name">Banff Gondola — Sulphur Mountain</div>
+      </div>
+      <div class="dur">2.5 hrs</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> 100 Mountain Ave, Banff, AB T1L 1J3</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Do NOT drive to the Gondola ($17.50 fee). Park FREE at Banff Train Station lot (Spirit Ave & Lynx St). Take Roam Transit Route 1 — FREE with Gondola ticket. Bus every 15–20 min from Banff Ave stops. ~10 min ride.</div></div>
+      <div class="row"><span class="row-icon">🎫</span><div><b>Tickets:</b> Pre-book online at banffjaspercollection.com. Opens 10:00 AM — book 10 AM slot. Kids 5 & under always free. Family Experience: 1 child free per paying adult for first 2 hrs (10–12 PM).</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> 8-min gondola ride up 700 m. At the top: 360° rooftop deck, Above Banff Interpretive Centre, multi-sensory theatre, Sky Bistro, 500 m boardwalk to Sanson Peak. Dress warm — 5–8°C cooler at summit.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Rooftop observation deck — Banff town, Bow Valley, and 6 mountain ranges in view. Also great inside the gondola cabin on the way up. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Banff+Gondola+100+Mountain+Ave+Banff" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Lunch</div>
+  <div class="meal-card">
+    <div class="meal-title">🍽 Indian Curry House</div>
+    <div class="meal-body">
+      <b>Address:</b> 225 Banff Ave #202, Banff, AB T1L 1A2<br>
+      <b>Park at:</b> 338 Beaver St pay lot (~CAD $3–4/hr). Walk 5 min north on Banff Ave to restaurant.<br>
+      <b>Time:</b> 12:30–1:30 PM. Opens 11:30 AM.<br>
+      <b>Vegetarian:</b> Excellent — veg korma, dal makhani, paneer dishes, vegetable biryani.<br>
+      <span class="veg-badge">🥦 Great vegetarian menu</span>
+    </div>
+    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Indian+Curry+House+225+Banff+Ave+Banff" target="_blank">📍 Open in Maps</a>
+  </div>
+
+  <div class="section-label">Afternoon</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-green">4</div>
+      <div class="stop-meta">
+        <div class="stop-time">1:45 PM · Drive 12 min northeast from Banff</div>
+        <div class="stop-name">Lake Minnewanka Cruise</div>
+      </div>
+      <div class="dur">1.5 hrs</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Lake Minnewanka Scenic Dr, Banff, AB T1L 1A1</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free large lot at the boat dock. No fee. Plenty of space even midday.</div></div>
+      <div class="row"><span class="row-icon">🎫</span><div><b>Tickets:</b> Book combo online at banffjaspercollection.com. Cruises run hourly 10 AM–6 PM. Aim for 2:00 PM cruise. Phone: +1 866-474-4766.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> 1-hr narrated boat cruise on Banff's largest lake (21 km). Captain tells the story of the sunken town of Minnewanka Landing. Watch canyon walls for bighorn sheep. Calm + relaxing for kids.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> From the boat's bow (front) — mountain peaks reflect in the calm lake. Best shots ~10 min in when the canyon opens up. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Lake+Minnewanka+Cruise+Banff" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-green">5</div>
+      <div class="stop-meta">
+        <div class="stop-time">3:30 PM · Drive 5 min south from Minnewanka</div>
+        <div class="stop-name">Two Jack Lake</div>
+      </div>
+      <div class="dur">30 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Two Jack Lake Rd, off Lake Minnewanka Scenic Dr, Banff NP</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free roadside lot right at the lake. Turn left on Two Jack Lake Rd from Minnewanka Scenic Dr.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Calm turquoise lake with Mt. Rundle backdrop. Skip rocks on the pebbly shore. Picnic tables nearby. Quieter than the famous lakes. Short flat lakeshore walk.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Small wooden dock/jetty — Mt. Rundle reflected in the lake. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Two+Jack+Lake+Banff" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-green">6</div>
+      <div class="stop-meta">
+        <div class="stop-time">4:10 PM · Drive 5 min south</div>
+        <div class="stop-name">Johnson Lake</div>
+      </div>
+      <div class="dur">45 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Johnson Lake, Bankhead area, Banff NP</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free lot at trailhead. Follow signs from Bankhead area off Lake Minnewanka Scenic Dr.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Flat 2.7 km loop trail. Beach at the parking lot for wading. Watch for elk grazing on the far meadow side. Usually quieter than other Banff lakes. Kids can explore the small beach.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> 200 m along left side of loop — clear view back across lake with Cascade Mountain behind. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Johnson+Lake+Banff" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-green">7</div>
+      <div class="stop-meta">
+        <div class="stop-time">5:05 PM · Drive 8 min — on the way home to Canmore</div>
+        <div class="stop-name">Hoodoos Viewpoint</div>
+      </div>
+      <div class="dur">35 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Hoodoos Viewpoint, Tunnel Mountain Rd, Banff</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free lot at the trailhead on Tunnel Mountain Rd. Signed from Banff Ave.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Eerie sandstone towers carved by erosion. Easy 10-min flat walk to first viewpoint. Walk to the far end for the full panorama. Kids think they look like alien towers.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Last bench at far end of viewpoint trail — hoodoos + Bow Valley + mountains behind. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <div class="row"><span class="row-icon">ℹ️</span><div><b>Why last?</b> Hoodoos sit between Johnson Lake and Banff town — placing them here means a smooth return to Canmore with zero backtracking.</div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Hoodoos+Viewpoint+Banff" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Dinner</div>
+  <div class="meal-card">
+    <div class="meal-title">🍽 Dinner — Banff Townsite</div>
+    <div class="meal-body">
+      <b>Banff Asian Indian Buffet</b> — buffet format, great for families, excellent veg curries & dals.<br>
+      Or <b>Coyotes Southwestern Grill</b> (215 Banff Ave) — strong vegetarian menu.<br>
+      <b>Parking:</b> Street parking on Banff Ave FREE after 8:00 PM.<br>
+      <b>Drive home:</b> 25 min east on Hwy 1 to Canmore.<br>
+      <span class="veg-badge">🥦 Great veg options at both</span>
+    </div>
+  </div>
+
+  <div class="tip-card"><b>💡 Tip:</b> Book the 10 AM Gondola slot — the Family Experience gives 1 free child admission per paying adult for the first 2 hrs (10–12 PM). Kids 5 & under always free. Bring an extra layer for the summit — always 5–8°C cooler up top.</div>
+</div>
+
+<!-- ═══════════════════════ DAY 2 ═══════════════════════ -->
+<div id="p1" class="panel">
+  <a class="full-route-btn" target="_blank"
+    href="https://www.google.com/maps/dir/170+Kananaskis+Way+Canmore+AB/Johnston+Canyon+Bow+Valley+Pkwy+Banff/Lake+Louise+Village+Alberta/Spiral+Tunnels+Viewpoint+Yoho/Takakkaw+Falls+Yoho/Natural+Bridge+Yoho+BC/Emerald+Lake+Yoho+BC/170+Kananaskis+Way+Canmore+AB">
+    🗺 Open Full Day 2 Route in Maps
+  </a>
+  <div class="route-strip">
+    <span class="rs">Hotel</span><span class="ra">›</span><span class="rs">Johnston Canyon</span><span class="ra">›</span><span class="rs">Lake Louise lunch</span><span class="ra">›</span><span class="rs">Spiral Tunnels</span><span class="ra">›</span><span class="rs">Takakkaw Falls</span><span class="ra">›</span><span class="rs">Natural Bridge</span><span class="ra">›</span><span class="rs">Emerald Lake</span><span class="ra">›</span><span class="rs">Hotel</span>
+  </div>
+
+  <div class="section-label">Morning</div>
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-purple">1</div>
+      <div class="stop-meta">
+        <div class="stop-time">8:00 AM · 40 min west via Bow Valley Pkwy (Hwy 1A)</div>
+        <div class="stop-name">Johnston Canyon — Lower Falls</div>
+      </div>
+      <div class="dur">1.5 hrs</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Bow Valley Pkwy, Banff NP, AB (Johnston Canyon trailhead)</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free large lot at the trailhead. Fills by 9:30 AM — arriving at 8:45 gets you a spot easily. Take Hwy 1A (Bow Valley Pkwy) from Canmore — more scenic & less traffic than Hwy 1.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Paved catwalk trail bolted into canyon walls. 1.1 km each way to lower falls. Bridges hang over rushing turquoise water. A cave behind the lower falls sprays mist — kids love it. Lower falls only — 40 min round trip at kid pace. Easy, no scrambling needed.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Main lower falls platform — waterfall framed by canyon walls. Also: from cave entrance looking toward the light. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Johnston+Canyon+Banff" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Lunch</div>
+  <div class="meal-card">
+    <div class="meal-title">🍽 Bill Peyto's Café — Lake Louise Village</div>
+    <div class="meal-body">
+      <b>Address:</b> 203 Village Rd, Lake Louise, AB T0L 1E0<br>
+      <b>Drive:</b> 30 min northwest on Hwy 1 from Johnston Canyon.<br>
+      <b>Parking:</b> Free lot beside the café in Lake Louise Village.<br>
+      <b>Vegetarian:</b> Good veg pasta, soups, sandwiches. Casual & affordable. Opens 7:30 AM.<br>
+      <span class="veg-badge">🥦 Veg pasta & soups</span>
+    </div>
+    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Bill+Peytos+Cafe+Lake+Louise+Village" target="_blank">📍 Open in Maps</a>
+  </div>
+
+  <div class="section-label">Afternoon — Yoho National Park</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-purple">2</div>
+      <div class="stop-meta">
+        <div class="stop-time">12:15 PM · Drive 20 min west on Hwy 1 into Yoho NP</div>
+        <div class="stop-name">Spiral Tunnels Viewpoint</div>
+      </div>
+      <div class="dur">20 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Hwy 1, just east of Yoho Valley Rd junction, Field, BC</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free roadside pullout. Watch for brown "Spiral Tunnels" sign on the north side of Hwy 1. Easy to miss — slow down when entering Yoho.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Interpretive board explains how engineers built figure-8 tunnels through the mountain in 1909. If a freight train appears, you can see front and back of the same train at different tunnel openings simultaneously — kids are mesmerized.</div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Spiral+Tunnels+Viewpoint+Yoho" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-purple">3</div>
+      <div class="stop-meta">
+        <div class="stop-time">12:40 PM · Drive 15 min north on Yoho Valley Rd</div>
+        <div class="stop-name">Takakkaw Falls</div>
+      </div>
+      <div class="dur">45 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> End of Yoho Valley Rd, Yoho NP, Field, BC V0A 1G0</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free large lot at end of Yoho Valley Rd. Road has tight hairpin switchbacks — drive slowly. RVs NOT permitted on this road.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Canada's 2nd tallest waterfall at 254 m. Flat 5-min walk from parking to the base. Roar and mist are spectacular. Bring a light rain jacket — you will get wet. Kids can safely get very close on the marked path.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Flat rocks ~50 m from the base, slightly left of centre — full height of falls + glacier at top. Turn around too — mountains behind are equally stunning. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Takakkaw+Falls+Yoho+National+Park" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-purple">4</div>
+      <div class="stop-meta">
+        <div class="stop-time">1:45 PM · Drive back down, then 10 min on Emerald Lake Rd</div>
+        <div class="stop-name">Natural Bridge</div>
+      </div>
+      <div class="dur">20 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Emerald Lake Rd, Yoho NP, BC — just before Emerald Lake</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free pullout directly on Emerald Lake Rd. Cannot miss it — right beside the road, 2 min before Emerald Lake. No fee.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> The Kicking Horse River has carved completely through solid limestone, creating a natural stone arch. Turquoise water roars underneath. 2-min walk from car. Kids love it — "the river goes UNDER the rock!"</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Crouch on the downstream side — arch frames the turquoise water rushing through. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Natural+Bridge+Yoho+National+Park" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-purple">5</div>
+      <div class="stop-meta">
+        <div class="stop-time">2:10 PM · Drive 5 min — end of Emerald Lake Rd</div>
+        <div class="stop-name">Emerald Lake</div>
+      </div>
+      <div class="dur">1.5 hrs</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Emerald Lake, Yoho NP, Field, BC</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free large lot at end of Emerald Lake Rd. At 2 PM you'll find space easily. No fee.</div></div>
+      <div class="row"><span class="row-icon">🛶</span><div><b>Canoe rentals:</b> Emerald Lake Canoe Rentals & The Boathouse, 1A Emerald Lake Rd — right at the lakefront, 100 m from parking. Open 10 AM–4:45 PM. ~CAD $100/hr. Walk-in only, no advance booking. Call +1 250-343-6000 morning of Day 2 to confirm.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Electric teal/green lake in a mountain bowl. Walk the flat 200 m to the wooden bridge at the lake outlet. Flat lakeshore path. The 9 km full loop is optional — just the dock area is enough with kids.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> From the wooden bridge over the lake outlet — red canoes on emerald water with lodge and mountains behind. Late afternoon light makes the water glow intensely. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Emerald+Lake+Yoho+National+Park" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Dinner</div>
+  <div class="meal-card">
+    <div class="meal-title">🍽 Dinner — Canmore (back at base)</div>
+    <div class="meal-body">
+      <b>Communitea Café</b> (1001 6 Ave, Canmore) — 100% vegetarian/vegan, closes 6:30 PM so go straight there. Or <b>The Trough Dining Co.</b> for vegetarian mains.<br>
+      <b>Drive back:</b> ~1.5 hrs east through Lake Louise then Hwy 1.<br>
+      <span class="veg-badge">🥦 Both vegetarian-friendly</span>
+    </div>
+  </div>
+  <div class="tip-card"><b>💡 Tip:</b> Leave by 8:00 AM to have Johnston Canyon practically to yourself. The lower falls takes 40 min at kid pace — skip the upper falls today, you have a full Yoho day ahead. Hairpin switchbacks on Yoho Valley Rd are tight — take them slowly.</div>
+</div>
+
+<!-- ═══════════════════════ DAY 3 ═══════════════════════ -->
+<div id="p2" class="panel">
+  <div class="alert alert-warn"><b>⚠ Critical:</b> Shuttle departs from 135 Beaver St, Banff. Arrive by 12:45 PM. Book weeks in advance — this is the most important booking of the trip.</div>
+  <a class="full-route-btn" target="_blank"
+    href="https://www.google.com/maps/dir/170+Kananaskis+Way+Canmore+AB/Canmore+Engine+Bridge+Spur+Line+Trail/Downtown+Canmore+Alberta/135+Beaver+St+Banff+AB/170+Kananaskis+Way+Canmore+AB">
+    🗺 Open Day 3 Driving Route in Maps
+  </a>
+  <div class="alert alert-info"><b>ℹ Lakes by shuttle:</b> Moraine Lake and Lake Louise are shuttle-only (no private cars). No Maps link needed for those — just board at 135 Beaver St.</div>
+  <div class="route-strip">
+    <span class="rs">Hotel</span><span class="ra">›</span><span class="rs">Engine Bridge</span><span class="ra">›</span><span class="rs">Canmore DT</span><span class="ra">›</span><span class="rs">Brunch</span><span class="ra">›</span><span class="rs">135 Beaver St</span><span class="ra">›</span><span class="rs">🚌 Moraine Lake</span><span class="ra">›</span><span class="rs">🚌 Lake Louise</span><span class="ra">›</span><span class="rs">Hotel</span>
+  </div>
+
+  <div class="section-label">Morning — Walk from Hotel</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-amber">1</div>
+      <div class="stop-meta">
+        <div class="stop-time">9:00 AM · 10-min walk or 2-min drive from hotel</div>
+        <div class="stop-name">Canmore Engine Bridge</div>
+      </div>
+      <div class="dur">30 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Spur Line Trail, Canmore, AB T1W 1V9</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Park at the hotel and walk — 10 min flat walk along Bow River trail. Or drive 2 min and use street parking on Larch Pl nearby. No fee.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Historic iron railway trestle bridge over the Bow River. Three Sisters peaks frame perfectly behind it. Walk across the bridge for views up and down the valley. Peaceful and local — very few tourists.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Stand on near bank looking at the bridge with Three Sisters behind — morning light at 9 AM hits the mountains perfectly. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Canmore+Engine+Bridge+Spur+Line+Trail" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-amber">2</div>
+      <div class="stop-meta">
+        <div class="stop-time">9:35 AM · 5-min walk from Engine Bridge</div>
+        <div class="stop-name">Downtown Canmore — Main Street</div>
+      </div>
+      <div class="dur">45 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Area:</b> 8th Ave & Main St, Canmore, AB</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Charming mountain town main street. Local art galleries, Rocky Mountain Soap, outdoor gear. Far less crowded than Banff Ave. Great mountain views down every street corner.</div></div>
+      <div class="row"><span class="row-icon">🛍</span><div><b>Pick up here:</b> Snacks and drinks for the shuttle day at Safeway (300 8 Ave) — food at Moraine Lake Lodge is expensive ($$$).</div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Downtown+Canmore+8th+Avenue" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Brunch</div>
+  <div class="meal-card">
+    <div class="meal-title">🍽 Communitea Café — Canmore</div>
+    <div class="meal-body">
+      <b>Address:</b> 1001 6 Ave #117, Canmore, AB T1W 3L8<br>
+      <b>Time:</b> 10:30 AM. Opens 9:30 AM.<br>
+      <b>Parking:</b> Street parking on 6 Ave, free.<br>
+      <b>Vegetarian:</b> 100% vegetarian/vegan — burritos, smoothie bowls, pad thai, baked goods. Best veg breakfast of the whole trip.<br>
+      <span class="veg-badge">🥦 Fully vegetarian/vegan</span>
+    </div>
+    <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Communitea+Cafe+1001+6+Ave+Canmore" target="_blank">📍 Open in Maps</a>
+  </div>
+
+  <div class="section-label">Afternoon — Lakes Shuttle from Banff</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-amber">3</div>
+      <div class="stop-meta">
+        <div class="stop-time">11:45 AM · Drive 25 min east to Banff</div>
+        <div class="stop-name">Shuttle — 135 Beaver St, Banff</div>
+      </div>
+      <div class="dur">Check in by 12:45 PM</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> 135 Beaver St, Banff, AB T1L 1A1</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Park on Banff Ave or Banff Train Station free lot (Spirit Ave). 5–8 min walk to 135 Beaver St. Do NOT be late — shuttle will not wait.</div></div>
+      <div class="row"><span class="row-icon">🚌</span><div><b>Shuttle covers:</b> Both Moraine Lake and Lake Louise on one ticket. Free connector shuttle runs between the two lakes. Return drops you back at 135 Beaver St.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>Moraine Lake:</b> Iconic turquoise lake + 10-peaks backdrop (was on the CAD $20 bill). Walk 15 min up the rocky moraine for the postcard photo — easy scramble kids love. Canoe rentals ~CAD $60/hr. Cold water — keep kids away from the edge.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>Lake Louise:</b> Château on turquoise water + Victoria Glacier. Flat 3 km round-trip lakeshore walk, stroller-friendly. Canoe rentals ~CAD $60/hr.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spots:</b> Moraine Lake — top of the rockpile moraine. Lake Louise — far end of lake looking back at château and glacier. <span class="photo-badge">📸 Photo perfect — both!</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=135+Beaver+Street+Banff+AB" target="_blank">📍 Shuttle stop in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Dinner</div>
+  <div class="meal-card">
+    <div class="meal-title">🍽 Dinner — Canmore</div>
+    <div class="meal-body">
+      <b>Rocky Mountain Flatbread Co.</b> (838 10 St, Canmore) — wood-fired pizzas, great veg & vegan options, very family-friendly.<br>
+      Or <b>The Trough Dining Co.</b> — vegetarian mains, nicer sit-down.<br>
+      <b>Return to hotel:</b> 5–10 min from downtown Canmore.<br>
+      <span class="veg-badge">🥦 Great veg pizza & mains</span>
+    </div>
+  </div>
+  <div class="tip-card"><b>💡 Tip:</b> Buy snacks at Canmore Safeway before leaving — food at Moraine Lake is very expensive. Confirm the last shuttle return time when booking (usually 5:30–6 PM). Last shuttles will not wait.</div>
+</div>
+
+<!-- ═══════════════════════ DAY 4 ═══════════════════════ -->
+<div id="p3" class="panel">
+  <div class="alert alert-warn"><b>⚠ Leave by 7:15 AM.</b> Peyto Lake parking fills by 9:30 AM. Pack snacks, water, and warm layers the night before. Cell coverage is nearly zero on the Icefields Parkway — download offline Google Maps tonight.</div>
+  <a class="full-route-btn" target="_blank"
+    href="https://www.google.com/maps/dir/170+Kananaskis+Way+Canmore+AB/Bow+Lake+Icefields+Parkway+Alberta/Peyto+Lake+Bow+Summit+Alberta/Columbia+Icefield+Discovery+Centre+Alberta/Columbia+Icefield+Skywalk+Alberta/Marble+Canyon+Kootenay+National+Park+BC/170+Kananaskis+Way+Canmore+AB">
+    🗺 Open Full Day 4 Route in Maps
+  </a>
+  <div class="route-strip">
+    <span class="rs">Hotel</span><span class="ra">›</span><span class="rs">Bow Lake</span><span class="ra">›</span><span class="rs">Peyto Lake</span><span class="ra">›</span><span class="rs">Columbia Icefield</span><span class="ra">›</span><span class="rs">Skywalk</span><span class="ra">›</span><span class="rs">Marble Canyon</span><span class="ra">›</span><span class="rs">Hotel</span>
+  </div>
+
+  <div class="section-label">Drive North on Hwy 93</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-blue">1</div>
+      <div class="stop-meta">
+        <div class="stop-time">8:30 AM · 75 min north from Canmore on Hwy 93</div>
+        <div class="stop-name">Bow Lake</div>
+      </div>
+      <div class="dur">30 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Bow Lake, Icefields Pkwy, Banff NP, AB</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free large gravel lot on the west side of Hwy 93. Well-signed. No fee.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Glacier-fed turquoise lake with Bow Glacier hanging above. Flat 5-min walk to the pebble lakeshore. Often glassy calm in the morning — perfect reflections. Kids can skip stones.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Walk left from parking to the small dock/launch area — lake, glacier, and mountains all in one frame. Morning light at 8:30 AM is perfect. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Bow+Lake+Icefields+Parkway" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-blue">2</div>
+      <div class="stop-meta">
+        <div class="stop-time">9:10 AM · 15 min north — Bow Summit</div>
+        <div class="stop-name">Peyto Lake — Bow Summit Viewpoint</div>
+      </div>
+      <div class="dur">45 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Bow Summit, Icefields Pkwy, Banff NP, AB (highest point on the Parkway, 2,069 m)</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free large lot at Bow Summit. No fee. Fills completely by 9:30–10 AM in June. At 9:10 AM you will get a spot. Arriving late = 30–45 min queue wait.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Peyto Lake is a wolf/fox-head shaped glacier lake far below — unnaturally vivid turquoise colour from glacial flour in the water. Main viewpoint is a 10-min gentle walk from parking on paved/gravel path. Fully accessible.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> Main railed viewpoint platform — best early morning (9 AM) for cloud-free light. The lake shape is only visible from above — this is the shot. <span class="photo-badge">📸 Best view on the entire Parkway</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Peyto+Lake+Bow+Summit+Icefields+Parkway" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Columbia Icefield</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-blue">3</div>
+      <div class="stop-meta">
+        <div class="stop-time">10:30 AM · 55 min north from Peyto Lake</div>
+        <div class="stop-name">Columbia Icefield — Ice Explorer</div>
+      </div>
+      <div class="dur">2 hrs</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> AB-93, Improvement District No. 12, AB (Columbia Icefield Discovery Centre)</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free large lot at the Discovery Centre. No fee. No issues at 10:30 AM.</div></div>
+      <div class="row"><span class="row-icon">🎫</span><div><b>Tickets:</b> Book the Glacier Adventure (Ice Explorer bus) in advance at banffjaspercollection.com. Opens 10:30 AM.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Large modified buses drive up the glacier and onto the Athabasca Glacier surface. Step on 10,000-year-old ice. Drink glacier meltwater from a small stream on the ice. Surreal experience for kids.</div></div>
+      <div class="row"><span class="row-icon">🧥</span><div><b>Dress:</b> Warm jacket, gloves, closed-toe shoes. Near 0°C on the glacier with wind chill, even in June.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> On the glacier surface with the Ice Explorer bus behind + mountain wall ahead. Blue stake markers show the best photography zone. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Columbia+Icefield+Discovery+Centre+Alberta" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Lunch</div>
+  <div class="meal-card">
+    <div class="meal-title">🍽 Discovery Centre Cafeteria</div>
+    <div class="meal-body">
+      <b>Location:</b> Inside the Columbia Icefield Discovery Centre — same building, no driving needed.<br>
+      <b>Time:</b> 12:30–1:15 PM. Don't skip — next services are 45 min away.<br>
+      <b>Vegetarian:</b> Soups, sandwiches, pasta, salads. Hot and filling after the glacier cold.<br>
+      <span class="veg-badge">🥦 Veg soups & pasta</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-blue">4</div>
+      <div class="stop-meta">
+        <div class="stop-time">1:30 PM · 5-min drive or 10-min walk from Discovery Centre</div>
+        <div class="stop-name">Columbia Icefield Skywalk</div>
+      </div>
+      <div class="dur">1 hr</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Columbia Icefield Skywalk, Icefields Pkwy, AB</div></div>
+      <div class="row"><span class="row-icon">🎫</span><div><b>Tickets:</b> Usually included in combo with Ice Explorer. Opens 11:00 AM.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Glass-floored walkway suspended 280 m (918 ft) above Sunwapta Valley. Fully paved and accessible. Interpretive panels explain the glacier ecosystem. Glass floor section is ~10 m — kids either love it or won't step on it. Glacier visible behind you the whole time.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> On the glass floor looking straight down, or from curved outer edge looking back at Athabasca Glacier. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Columbia+Icefield+Skywalk+Alberta" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Return South</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="stop-num n-blue">5</div>
+      <div class="stop-meta">
+        <div class="stop-time">3:00 PM · Drive ~1.5 hrs south, turn at Castle Junction onto Hwy 93S</div>
+        <div class="stop-name">Marble Canyon — Kootenay NP</div>
+      </div>
+      <div class="dur">45 min</div>
+    </div>
+    <div class="card-body">
+      <div class="row"><span class="row-icon">📍</span><div><b>Address:</b> Marble Canyon Trailhead, Kootenay NP, BC (8 km south of Castle Junction on Hwy 93S)</div></div>
+      <div class="row"><span class="row-icon">🚗</span><div><b>Parking:</b> Free lot at trailhead. No fee. Turn south at Castle Junction (Hwy 1 meets Hwy 93S) — Marble Canyon is signed 8 km in.</div></div>
+      <div class="row"><span class="row-icon">👀</span><div><b>What to see:</b> Short 1.5 km boardwalk loop through a dramatic marble & limestone canyon. Seven bridges cross the canyon. Electric blue glacial water far below. Less crowded than Johnston Canyon — a hidden gem. Kids love peering down from each bridge.</div></div>
+      <div class="row"><span class="row-icon">📸</span><div><b>Photo spot:</b> From the 4th bridge looking upstream — canyon narrows dramatically, blue water perfectly framed. <span class="photo-badge">📸 Photo perfect</span></div></div>
+      <a class="maps-btn" href="https://www.google.com/maps/search/?api=1&query=Marble+Canyon+Kootenay+National+Park" target="_blank">📍 Open in Maps</a>
+    </div>
+  </div>
+
+  <div class="section-label">Dinner</div>
+  <div class="meal-card">
+    <div class="meal-title">🍽 Farewell Dinner — Canmore</div>
+    <div class="meal-body">
+      <b>The Trough Dining Co.</b> — excellent vegetarian mains, upscale casual, perfect for a final-night celebration. Book ahead.<br>
+      Or <b>Sage Bistro</b> — mountain lodge atmosphere, good veg options.<br>
+      <b>Drive home from Marble Canyon:</b> ~35 min south on Hwy 93S then east on Hwy 1.<br>
+      <span class="veg-badge">🥦 Vegetarian mains available</span>
+    </div>
+  </div>
+  <div class="tip-card"><b>💡 Tip:</b> Fill up on gas in Banff or Lake Louise before going north — there are NO gas stations between Lake Louise and Jasper. Download offline Google Maps for the Icefields Parkway tonight (nearly zero cell signal all day).</div>
+</div>
+
+<script>
+var panels = ['p0','p1','p2','p3'];
+var tabs = ['tab0','tab1','tab2','tab3'];
+
+function show(i) {
+  panels.forEach(function(id, j) {
+    document.getElementById(id).className = 'panel' + (i === j ? ' active' : '');
+  });
+  tabs.forEach(function(id, j) {
+    document.getElementById(id).className = 'tab' + (i === j ? ' active' : '');
+  });
+  window.scrollTo(0, 0);
+}
+
+// Attach both touchend and click to each tab for maximum iOS compatibility
+tabs.forEach(function(id, i) {
+  var el = document.getElementById(id);
+  var touched = false;
+
+  el.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    touched = true;
+    show(i);
+    setTimeout(function() { touched = false; }, 500);
+  }, { passive: false });
+
+  el.addEventListener('click', function(e) {
+    if (!touched) { show(i); }
+  });
+});
+</script>
+</body>
+</html>
